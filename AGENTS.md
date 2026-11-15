@@ -6,7 +6,7 @@ Working rules for this repository. Read together with `CONTEXT.md` (product).
 
 - Strict TypeScript (`noUncheckedIndexedAccess`), ESM, no runtime dependency besides `@openchamber/sdk` 2.7.2.
 - Work Status section drawn by the app from `GET /status` (`statusSection.source`), plus a rail panel (`src/panel/` → `panel/main.js`) that reads `GET /sites`.
-- Bundle: `openchamber-guest-bundle` (Bun): panel as a browser IIFE, service with `--node`. Tests: `bun test`. Typecheck: `tsc --noEmit`.
+- Bundle: `openchamber-guest-bundle` (Bun 1.3.14, pinned in CI: another Bun minifies with other names and the built-files check fails): panel as a browser IIFE, service with `--node`. Tests: `bun test`. Typecheck: `tsc --noEmit`.
 
 ## Commands
 
