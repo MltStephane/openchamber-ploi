@@ -1,0 +1,402 @@
+<h2>Explanation</h2>
+<p>
+    Security vulnerabilities were detected in the NPM dependencies of your sites.
+    These vulnerabilities could potentially be exploited by attackers and should be addressed promptly.
+</p>
+
+
+<h3>Summary</h3>
+<ul>
+    <li><strong>Total vulnerabilities:</strong> 53</li>
+    <li><strong>Affected sites:</strong> 6</li>
+    <li><strong>Highest severity:</strong>
+                    <span class="text-red-500 font-bold">Critical</span>
+            </li>
+</ul>
+
+
+    <p class="mt-2">
+        <strong>By severity:</strong> <span class="text-red-500 font-bold">6 Critical</span>, <span class="text-red-500">47 High</span>
+    </p>
+
+<h3 class="mt-4">Affected sites</h3>
+    <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <h4>
+            <a href="/panel/servers/1001/sites/2001" class="panel-link">shop.example.com</a>
+            <span class="text-sm text-gray-500">(Laravel)</span>
+        </h4>
+
+        <ul class="mt-2 ml-4">
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: ReDoS in fromDataURI data: URL parser freezes the Node event loop (DoS)
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-c29m-xwm3-cm6r" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: ReDoS (O(N²)) in shouldBypassProxy host normalization, reachable via untrusted redirect Location
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-mghh-pgcx-3jjj" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: Prototype Pollution Gadget in axios toFormData Options
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-x97p-jq2g-jp4f" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: HTTP/2 adapter bypasses configured DNS lookup and proxy controls
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-3pq3-5fj3-cg6v" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: Denial of Service via Unhandled &#039;error&#039; Event in HTTP/2 ClientHttp2Session Initialization
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-542g-h47m-68v8" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: Node HTTP adapter prototype-pollution gadget allows request socket hijack via inherited createConnection
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-m8m8-qj5v-23w3" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: maxRedirects: 0 is not enforced by the fetch adapter, allowing redirect-based SSRF
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-r4gj-5m52-g5wh" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>follow-redirects</strong>: follow-redirects array-form headers bypass cross-origin credential stripping
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-q3jh-wrc6-jgq8" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>follow-redirects</strong>: follow-redirects sensitiveHeaders regex escaping can expose credential headers
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-8r9p-f939-6h3c" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>follow-redirects</strong>: follow-redirects: Cross-realm sensitiveHeaders arrays are discarded and custom credentials can follow redirects
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-mrwp-f3q8-3g9p" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>prosemirror-view</strong>: ProseMirror has a XSS vulnerability in prosemirror-view&#039;s paste handling
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-c8x8-7fp4-3x9w" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">CRITICAL</span>
+                                        <strong>shell-quote</strong>: shell-quote: `quote()` command injection via a line terminator in a token after a `{ comment }` token
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-pqg4-j6r4-53mv" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>source-map-js</strong>: source-map-js allows event-loop denial of service through indexed source-map section offsets
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-68fv-2mgg-jv7q" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>vite</strong>: launch-editor: `fs.existsSync()` existence check can be bypassed on Windows
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-587h-7wmj-h5pm" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                    </ul>
+    </div>
+    <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <h4>
+            <a href="/panel/servers/1001/sites/2002" class="panel-link">blog.example.com</a>
+            <span class="text-sm text-gray-500">(Laravel)</span>
+        </h4>
+
+        <ul class="mt-2 ml-4">
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: ReDoS in fromDataURI data: URL parser freezes the Node event loop (DoS)
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-c29m-xwm3-cm6r" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: ReDoS (O(N²)) in shouldBypassProxy host normalization, reachable via untrusted redirect Location
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-mghh-pgcx-3jjj" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: Prototype Pollution Gadget in axios toFormData Options
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-x97p-jq2g-jp4f" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: HTTP/2 adapter bypasses configured DNS lookup and proxy controls
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-3pq3-5fj3-cg6v" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: Denial of Service via Unhandled &#039;error&#039; Event in HTTP/2 ClientHttp2Session Initialization
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-542g-h47m-68v8" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: Node HTTP adapter prototype-pollution gadget allows request socket hijack via inherited createConnection
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-m8m8-qj5v-23w3" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>axios</strong>: Axios: maxRedirects: 0 is not enforced by the fetch adapter, allowing redirect-based SSRF
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-r4gj-5m52-g5wh" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>browserslist</strong>: Browserslist: Unbounded memory growth (no cache eviction) via distinct query results, leading to eventual OOM
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-c83g-rgw3-j3cx" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>browserslist</strong>: Browserslist: Uncaught crash / prototype write via untrusted browserslist-stats.json custom stats (normalizeStats)
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-73wf-gq98-2v4g" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>follow-redirects</strong>: follow-redirects array-form headers bypass cross-origin credential stripping
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-q3jh-wrc6-jgq8" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>follow-redirects</strong>: follow-redirects sensitiveHeaders regex escaping can expose credential headers
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-8r9p-f939-6h3c" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>follow-redirects</strong>: follow-redirects: Cross-realm sensitiveHeaders arrays are discarded and custom credentials can follow redirects
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-mrwp-f3q8-3g9p" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">CRITICAL</span>
+                                        <strong>shell-quote</strong>: shell-quote: `quote()` command injection via a line terminator in a token after a `{ comment }` token
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-pqg4-j6r4-53mv" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>source-map-js</strong>: source-map-js allows event-loop denial of service through indexed source-map section offsets
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-68fv-2mgg-jv7q" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>vite</strong>: launch-editor: `fs.existsSync()` existence check can be bypassed on Windows
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-587h-7wmj-h5pm" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                    </ul>
+    </div>
+    <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <h4>
+            <a href="/panel/servers/1001/sites/2003" class="panel-link">api.example.com</a>
+            <span class="text-sm text-gray-500">(Laravel)</span>
+        </h4>
+
+        <ul class="mt-2 ml-4">
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">CRITICAL</span>
+                                        <strong>shell-quote</strong>: shell-quote: `quote()` command injection via a line terminator in a token after a `{ comment }` token
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-pqg4-j6r4-53mv" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>source-map-js</strong>: source-map-js allows event-loop denial of service through indexed source-map section offsets
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-68fv-2mgg-jv7q" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>vite</strong>: launch-editor: `fs.existsSync()` existence check can be bypassed on Windows
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-587h-7wmj-h5pm" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                    </ul>
+    </div>
+    <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <h4>
+            <a href="/panel/servers/1001/sites/2004" class="panel-link">docs.example.com</a>
+            <span class="text-sm text-gray-500">(Laravel)</span>
+        </h4>
+
+        <ul class="mt-2 ml-4">
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>browserslist</strong>: Browserslist: Unbounded memory growth (no cache eviction) via distinct query results, leading to eventual OOM
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-c83g-rgw3-j3cx" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>browserslist</strong>: Browserslist: Uncaught crash / prototype write via untrusted browserslist-stats.json custom stats (normalizeStats)
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-73wf-gq98-2v4g" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>nanoid</strong>: nanoid: non-secure generators can loop indefinitely with negative size
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-28wg-ghj8-5hjv" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>nanoid</strong>: nanoid: custom generators can loop indefinitely when size is zero
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-2v37-7h3g-55p8" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>postcss</strong>: PostCSS: Path Traversal in Previous Source Map Auto-Loading (sourceMappingURL) leads to Arbitrary .map File Disclosure
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-r28c-9q8g-f849" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>shell-quote</strong>: shell-quote: Quadratic-complexity Denial of Service in `parse()` (CWE-407)
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-395f-4hp3-45gv" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">CRITICAL</span>
+                                        <strong>shell-quote</strong>: shell-quote: `quote()` command injection via a line terminator in a token after a `{ comment }` token
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-pqg4-j6r4-53mv" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>source-map-js</strong>: source-map-js allows event-loop denial of service through indexed source-map section offsets
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-68fv-2mgg-jv7q" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>vite</strong>: launch-editor: `fs.existsSync()` existence check can be bypassed on Windows
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-587h-7wmj-h5pm" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                    </ul>
+    </div>
+    <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <h4>
+            <a href="/panel/servers/1001/sites/2005" class="panel-link">studio.example.com</a>
+            <span class="text-sm text-gray-500">(Laravel)</span>
+        </h4>
+
+        <ul class="mt-2 ml-4">
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>browserslist</strong>: Browserslist: Unbounded memory growth (no cache eviction) via distinct query results, leading to eventual OOM
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-c83g-rgw3-j3cx" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>browserslist</strong>: Browserslist: Uncaught crash / prototype write via untrusted browserslist-stats.json custom stats (normalizeStats)
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-73wf-gq98-2v4g" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>nanoid</strong>: nanoid: non-secure generators can loop indefinitely with negative size
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-28wg-ghj8-5hjv" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>nanoid</strong>: nanoid: custom generators can loop indefinitely when size is zero
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-2v37-7h3g-55p8" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>postcss</strong>: PostCSS: Path Traversal in Previous Source Map Auto-Loading (sourceMappingURL) leads to Arbitrary .map File Disclosure
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-r28c-9q8g-f849" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>shell-quote</strong>: shell-quote: Quadratic-complexity Denial of Service in `parse()` (CWE-407)
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-395f-4hp3-45gv" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">CRITICAL</span>
+                                        <strong>shell-quote</strong>: shell-quote: `quote()` command injection via a line terminator in a token after a `{ comment }` token
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-pqg4-j6r4-53mv" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>source-map-js</strong>: source-map-js allows event-loop denial of service through indexed source-map section offsets
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-68fv-2mgg-jv7q" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>vite</strong>: launch-editor: `fs.existsSync()` existence check can be bypassed on Windows
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-587h-7wmj-h5pm" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                    </ul>
+    </div>
+    <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <h4>
+            <a href="/panel/servers/1001/sites/2006" class="panel-link">app.example.org</a>
+            <span class="text-sm text-gray-500">(Laravel)</span>
+        </h4>
+
+        <ul class="mt-2 ml-4">
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">CRITICAL</span>
+                                        <strong>shell-quote</strong>: shell-quote: `quote()` command injection via a line terminator in a token after a `{ comment }` token
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-pqg4-j6r4-53mv" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>source-map-js</strong>: source-map-js allows event-loop denial of service through indexed source-map section offsets
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-68fv-2mgg-jv7q" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                            <li class="mb-2">
+                                            <span class="inline-block px-2 py-0.5 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">HIGH</span>
+                                        <strong>vite</strong>: launch-editor: `fs.existsSync()` existence check can be bypassed on Windows
+                                            <span class="text-sm text-green-600">(fix available)</span>
+                                                                <br><a href="https://github.com/advisories/GHSA-587h-7wmj-h5pm" target="_blank" rel="noopener" class="text-sm panel-link">More info &rarr;</a>
+                                    </li>
+                    </ul>
+    </div>
+
+<h3 class="mt-4">Recommended actions</h3>
+<ul>
+    <li>Run <code>npm audit fix</code> on affected sites to automatically fix vulnerabilities where possible</li>
+    <li>For breaking changes, run <code>npm audit fix --force</code> (review changes carefully)</li>
+    <li>Review the linked advisories for specific remediation steps</li>
+    <li>For critical vulnerabilities, prioritize immediate patching</li>
+</ul>

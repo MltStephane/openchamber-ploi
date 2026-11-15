@@ -1,0 +1,32 @@
+<h2>Explanation</h2>
+<p>
+    The following SSL certificates have failed renewal attempts detected in the Let's Encrypt logs. This could indicate:
+</p>
+<ul>
+    <li>DNS issues preventing domain validation</li>
+    <li>Firewall blocking Let's Encrypt verification servers</li>
+    <li>Webserver configuration issues</li>
+    <li>Rate limiting from Let's Encrypt</li>
+</ul>
+
+<h3>Failed Certificates</h3>
+<ul>
+            <li>
+                            <a href="/panel/servers/1002/sites/2007" class="panel-link">cloud.example.net</a>
+                                        &centerdot; Site: cloud.example.net
+                        <br>
+            <small class="text-muted">
+                Failures detected: 2
+                                    <br>Last error: 2026-01-01 04:00:00,000ERROR:certbot._internal.renewal:Failed to renew certificate cloud.example.net with error: Some challenges have failed.
+                            </small>
+        </li>
+    </ul>
+
+<h3>Recommended Actions</h3>
+<ul>
+    <li>Check the full Let's Encrypt logs on the server: <code>/var/log/letsencrypt/letsencrypt.log</code></li>
+    <li>Verify DNS records are pointing correctly to your server</li>
+    <li>Ensure port 80 and 443 are accessible from the internet</li>
+    <li>Check if you've hit Let's Encrypt rate limits</li>
+    <li>Try manually renewing certificates using the SSL tab for each affected site</li>
+</ul>

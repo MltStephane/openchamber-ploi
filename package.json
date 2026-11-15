@@ -1,0 +1,58 @@
+{
+  "name": "openchamber-ploi",
+  "version": "2.0.0",
+  "private": true,
+  "description": "OpenChamber extension: your Ploi servers and sites in a side panel and in Work Status, with live HTTP checks, insights and fix sessions.",
+  "type": "module",
+  "openchamber": {
+    "apiVersion": 1,
+    "engines": {
+      "openchamber": ">=2.7.2"
+    },
+    "id": "ploi",
+    "name": "Ploi",
+    "icon": "icon.svg",
+    "contributes": {
+      "panel": {
+        "entry": "panel/index.html"
+      },
+      "capabilities": [
+        "sessions",
+        "prompt"
+      ],
+      "service": {
+        "entry": "service/main.js",
+        "runtime": "host",
+        "permissions": {
+          "exec": [
+            "git"
+          ]
+        }
+      },
+      "statusSection": {
+        "source": {
+          "path": "/status",
+          "interval": 15000
+        },
+        "title": "Ploi"
+      },
+      "instructions": true
+    }
+  },
+  "scripts": {
+    "build": "npm run build:panel && npm run build:service",
+    "check": "openchamber-guest-check",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "build:panel": "openchamber-guest-bundle src/panel/main.ts panel/main.js",
+    "build:service": "mkdir -p service && openchamber-guest-bundle --node src/service.ts service/main.js"
+  },
+  "dependencies": {
+    "@openchamber/sdk": "2.7.2"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "@types/node": "^26.6.6",
+    "typescript": "^5.9.3"
+  }
+}
