@@ -19,6 +19,6 @@ export const readCredential = async (readSettings: () => Promise<Record<string, 
 
 /** What the integration card says until the token works. English: the card has no locale. */
 export const CARD_MESSAGES = {
-  missing: 'Paste a Ploi API token (read access is enough) to see your servers and sites.',
-  refused: 'Ploi refused the API token. Create a new one in Ploi (read access) and paste it here.',
+  missing: 'Paste a Ploi API token (read access is enough) in “Ploi API token” to see your servers and sites.',
+  refused: 'Ploi refused the token in “Ploi API token”. Create a new one in Ploi (read access) and paste it there.',
 } as const;

@@ -26,7 +26,7 @@ fuser -k 4597/tcp 4599/tcp
 ## Conventions
 
 1. **Read-only.** Only Ploi read tools (`list-*`, `get-*`). Never a deploy, restart, update tool, nor `fix-`/`ignore-`/`delete-server-insight`.
-2. The Ploi API token comes only from the integration card's `secret` field `api-token`, through `readSettings()` (`src/credentials.ts`), as the SDK intends. Never read another app's config or secrets, never log the token, never send it anywhere but `https://ploi.io/api/mcp`, never put it in the section or a page. Missing or refused: `needsConfiguration` on the card and a note in the section; cleared once Ploi answers.
+2. The Ploi API token comes only from the integration card's `secret` field `api-token`, through `readSettings()` (`src/credentials.ts`), as the SDK intends. Never read another app's config or secrets, never log the token, never send it anywhere but `https://ploi.io/api/mcp`, never put it in the section or a page. Missing or refused: `needsConfiguration` on the card and a note in the section; cleared once Ploi answers. The `token` block in the manifest exists only because OpenChamber requires an auth block; its "API token" field is unused (a service cannot read it), and the description and labels say so. Drop it once OpenChamber accepts an integration with settings only.
 3. `src/status-view.ts` and `src/sites-payload.ts` stay pure. Every answer must pass `guestStatusViewSchema` (`test/status-view.test.ts`): 16 rows max, 200 characters per text, unique ids.
 4. All visible text goes through `translator()` (`src/i18n.ts`); every key exists in English and French (tested).
 5. Failures are rows, never a 500: a missing or refused token, an unreachable Ploi or an unreachable site is a note or a red dot.

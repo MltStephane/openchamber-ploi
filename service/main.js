@@ -216,8 +216,8 @@ var en = {
   "control.view.overview": "Overview",
   "control.view.sites": "All sites",
   "control.refresh": "Refresh",
-  "ploi.tokenMissing": "Add a Ploi API token in Settings → Integrations → Ploi to see your servers and sites.",
-  "ploi.tokenRefused": "Ploi refused the API token. Create a new one in Ploi (read access), then paste it in Settings → Integrations → Ploi.",
+  "ploi.tokenMissing": "Add a Ploi API token in Settings → Integrations → Ploi, field “Ploi API token”, to see your servers and sites.",
+  "ploi.tokenRefused": "Ploi refused the API token. Create a new one in Ploi (read access), then paste it in Settings → Integrations → Ploi, field “Ploi API token”.",
   "ploi.hostUnavailable": "Cannot read the Ploi token from OpenChamber. Reload the extension in Settings → Extensions.",
   "ploi.network": "Cannot reach Ploi. Check your connection, then Refresh.",
   "ploi.failed": "Ploi failed: {message}",
@@ -313,8 +313,8 @@ var fr = {
   "control.view.overview": "Vue d’ensemble",
   "control.view.sites": "Tous les sites",
   "control.refresh": "Actualiser",
-  "ploi.tokenMissing": "Ajoutez un jeton d’API Ploi dans Réglages → Intégrations → Ploi pour voir vos serveurs et sites.",
-  "ploi.tokenRefused": "Ploi refuse le jeton d’API. Créez-en un nouveau dans Ploi (lecture seule), puis collez-le dans Réglages → Intégrations → Ploi.",
+  "ploi.tokenMissing": "Ajoutez un jeton d’API Ploi dans Réglages → Intégrations → Ploi, champ « Ploi API token », pour voir vos serveurs et sites.",
+  "ploi.tokenRefused": "Ploi refuse le jeton d’API. Créez-en un nouveau dans Ploi (lecture seule), puis collez-le dans Réglages → Intégrations → Ploi, champ « Ploi API token ».",
   "ploi.hostUnavailable": "Impossible de lire le jeton Ploi depuis OpenChamber. Rechargez l’extension dans Réglages → Extensions.",
   "ploi.network": "Ploi est injoignable. Vérifiez la connexion, puis Actualiser.",
   "ploi.failed": "Ploi a échoué : {message}",
@@ -431,8 +431,8 @@ var readCredential = async (readSettings) => {
   return token ? { ok: true, token } : { ok: false, reason: "missing" };
 };
 var CARD_MESSAGES = {
-  missing: "Paste a Ploi API token (read access is enough) to see your servers and sites.",
-  refused: "Ploi refused the API token. Create a new one in Ploi (read access) and paste it here."
+  missing: "Paste a Ploi API token (read access is enough) in “Ploi API token” to see your servers and sites.",
+  refused: "Ploi refused the token in “Ploi API token”. Create a new one in Ploi (read access) and paste it there."
 };
 
 // src/mcp-client.ts
@@ -1041,7 +1041,7 @@ var buildView = (input) => {
 };
 
 // src/service.ts
-var VERSION = "3.0.0";
+var VERSION = "3.0.1";
 var port = Number(process.env.OPENCHAMBER_SERVICE_PORT);
 var token = process.env.OPENCHAMBER_SERVICE_TOKEN ?? "";
 if (!port || !token) {

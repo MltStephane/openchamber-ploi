@@ -1,6 +1,6 @@
 {
   "name": "openchamber-ploi",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "private": true,
   "description": "OpenChamber extension: your Ploi servers and sites in a side panel and in Work Status, with live HTTP checks, insights and fix sessions.",
   "type": "module",
@@ -39,7 +39,7 @@
       "instructions": true,
       "integration": {
         "name": "Ploi",
-        "description": "Reads your Ploi servers, sites and insights with an API token. Read-only.",
+        "description": "Paste your Ploi API token (read access) in “Ploi API token”. The generic “API token” field above is not used and can stay empty.",
         "token": {
           "apiOrigin": "https://ploi.io",
           "scheme": "bearer"
@@ -47,7 +47,7 @@
         "settings": [
           {
             "id": "api-token",
-            "label": "Ploi API token (read access)",
+            "label": "Ploi API token (used by the extension)",
             "secret": true
           }
         ]

@@ -63,7 +63,7 @@ Your sites run on servers you rarely open. A deploy breaks a page, a certificate
    ```
 3. Update it later by raising `version`: OpenChamber offers the update in **Settings → Extensions**.
 4. **Approve** what the extension asks for: the local service (it runs `git` to read your projects' remotes), the Ploi integration, and *sessions* + *prompt* for *Fix the findings*.
-5. Paste the token in **Settings → Integrations → Ploi**. Until then, the card and the section say it is missing.
+5. Paste the token in **Settings → Integrations → Ploi**, field **Ploi API token**. The card also shows a generic **API token** field: OpenChamber requires it on every integration, but a service cannot read it, so leave it empty. Until the token is set, the card and the section say it is missing.
 6. Click the <kbd>Ploi</kbd> icon on the rail for the **panel**; the **Ploi** section appears in Work Status.
 
 > [!TIP]
