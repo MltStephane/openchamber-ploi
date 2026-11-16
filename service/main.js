@@ -1041,7 +1041,7 @@ var buildView = (input) => {
 };
 
 // src/service.ts
-var VERSION = "3.0.2";
+var VERSION = "3.0.3";
 var port = Number(process.env.OPENCHAMBER_SERVICE_PORT);
 var token = process.env.OPENCHAMBER_SERVICE_TOKEN ?? "";
 if (!port || !token) {
