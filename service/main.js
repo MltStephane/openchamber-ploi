@@ -216,13 +216,11 @@ var en = {
   "control.view.overview": "Overview",
   "control.view.sites": "All sites",
   "control.refresh": "Refresh",
-  "mcp.notConfigured": 'No Ploi MCP server in OpenCode. Add a remote server named "ploi" (https://ploi.io/api/mcp) to the "mcp" block of ~/.config/opencode/opencode.json.',
-  "mcp.disabled": 'The "{name}" MCP server is disabled in OpenCode. Set "enabled": true to see your sites.',
-  "mcp.notRemote": 'The "{name}" MCP server is not a remote server. Use "type": "remote" with https://ploi.io/api/mcp.',
-  "mcp.unresolved": "Cannot read {placeholder} from the Ploi MCP headers in OpenCode.",
-  "mcp.auth": "The Ploi MCP server refused the token. Create a new API token in Ploi and update OpenCode.",
-  "mcp.network": "Cannot reach the Ploi MCP server. Check your connection, then Refresh.",
-  "mcp.failed": "The Ploi MCP server failed: {message}",
+  "ploi.tokenMissing": "Add a Ploi API token in Settings → Integrations → Ploi to see your servers and sites.",
+  "ploi.tokenRefused": "Ploi refused the API token. Create a new one in Ploi (read access), then paste it in Settings → Integrations → Ploi.",
+  "ploi.hostUnavailable": "Cannot read the Ploi token from OpenChamber. Reload the extension in Settings → Extensions.",
+  "ploi.network": "Cannot reach Ploi. Check your connection, then Refresh.",
+  "ploi.failed": "Ploi failed: {message}",
   loading: "Reading your servers from Ploi…",
   empty: "No sites on your Ploi account yet.",
   "project.noMatch": "No Ploi site is deployed from this project.",
@@ -315,13 +313,11 @@ var fr = {
   "control.view.overview": "Vue d’ensemble",
   "control.view.sites": "Tous les sites",
   "control.refresh": "Actualiser",
-  "mcp.notConfigured": "Aucun serveur MCP Ploi dans OpenCode. Ajoutez un serveur distant nommé « ploi » (https://ploi.io/api/mcp) au bloc « mcp » de ~/.config/opencode/opencode.json.",
-  "mcp.disabled": 'Le serveur MCP « {name} » est désactivé dans OpenCode. Mettez "enabled": true pour voir vos sites.',
-  "mcp.notRemote": 'Le serveur MCP « {name} » n’est pas un serveur distant. Utilisez "type": "remote" avec https://ploi.io/api/mcp.',
-  "mcp.unresolved": "Impossible de lire {placeholder} dans les en-têtes du MCP Ploi d’OpenCode.",
-  "mcp.auth": "Le serveur MCP Ploi refuse le jeton. Créez un nouveau jeton d’API dans Ploi et mettez à jour OpenCode.",
-  "mcp.network": "Le serveur MCP Ploi est injoignable. Vérifiez la connexion, puis Actualiser.",
-  "mcp.failed": "Le serveur MCP Ploi a échoué : {message}",
+  "ploi.tokenMissing": "Ajoutez un jeton d’API Ploi dans Réglages → Intégrations → Ploi pour voir vos serveurs et sites.",
+  "ploi.tokenRefused": "Ploi refuse le jeton d’API. Créez-en un nouveau dans Ploi (lecture seule), puis collez-le dans Réglages → Intégrations → Ploi.",
+  "ploi.hostUnavailable": "Impossible de lire le jeton Ploi depuis OpenChamber. Rechargez l’extension dans Réglages → Extensions.",
+  "ploi.network": "Ploi est injoignable. Vérifiez la connexion, puis Actualiser.",
+  "ploi.failed": "Ploi a échoué : {message}",
   loading: "Lecture de vos serveurs sur Ploi…",
   empty: "Aucun site sur votre compte Ploi pour l’instant.",
   "project.noMatch": "Aucun site Ploi n’est déployé depuis ce projet.",
@@ -419,6 +415,24 @@ var translator = (locale) => (key, params = {}) => {
   const count = Number(params.count ?? 0);
   const template = typeof entry === "string" ? entry : new Intl.PluralRules(locale).select(count) === "one" ? entry.one : entry.other;
   return template.replace(/\{(\w+)\}/g, (whole, name) => (name in params) ? String(params[name]) : whole);
+};
+
+// src/credentials.ts
+var PLOI_MCP_URL = "https://ploi.io/api/mcp";
+var TOKEN_SETTING = "api-token";
+var readCredential = async (readSettings) => {
+  let settings;
+  try {
+    settings = await readSettings();
+  } catch {
+    return { ok: false, reason: "host" };
+  }
+  const token = settings[TOKEN_SETTING]?.trim();
+  return token ? { ok: true, token } : { ok: false, reason: "missing" };
+};
+var CARD_MESSAGES = {
+  missing: "Paste a Ploi API token (read access is enough) to see your servers and sites.",
+  refused: "Ploi refused the API token. Create a new one in Ploi (read access) and paste it here."
 };
 
 // src/mcp-client.ts
@@ -535,139 +549,6 @@ class McpClient {
   }
 }
 
-// src/opencode-config.ts
-import { readFile } from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
-var MCP_NAME = "ploi";
-var stripJsonc = (text) => {
-  let out = "";
-  let inString = false;
-  for (let i = 0;i < text.length; i += 1) {
-    const char = text[i];
-    if (inString) {
-      out += char;
-      if (char === "\\") {
-        out += text[i + 1] ?? "";
-        i += 1;
-      } else if (char === '"')
-        inString = false;
-      continue;
-    }
-    if (char === '"') {
-      inString = true;
-      out += char;
-      continue;
-    }
-    if (char === "/" && text[i + 1] === "/") {
-      while (i < text.length && text[i] !== `
-`)
-        i += 1;
-      out += `
-`;
-      continue;
-    }
-    if (char === "/" && text[i + 1] === "*") {
-      i += 2;
-      while (i < text.length && !(text[i] === "*" && text[i + 1] === "/"))
-        i += 1;
-      i += 1;
-      continue;
-    }
-    out += char;
-  }
-  return out.replace(/,(\s*[}\]])/g, "$1");
-};
-var configCandidates = (env = process.env) => {
-  const base = env.XDG_CONFIG_HOME || path.join(os.homedir(), ".config");
-  const dir = path.join(base, "opencode");
-  return ["opencode.json", "opencode.jsonc", "config.json"].map((file) => path.join(dir, file));
-};
-var expandHome = (value) => value.startsWith("~/") ? path.join(os.homedir(), value.slice(2)) : value;
-var resolvePlaceholders = async (value, configDir, env = process.env) => {
-  let result = value;
-  for (const match of value.matchAll(/\{env:([^}]+)\}/g)) {
-    const resolved = env[match[1]];
-    if (resolved === undefined)
-      throw new Error(match[0]);
-    result = result.replace(match[0], resolved);
-  }
-  for (const match of value.matchAll(/\{file:([^}]+)\}/g)) {
-    const file = path.resolve(configDir, expandHome(match[1]));
-    try {
-      result = result.replace(match[0], (await readFile(file, "utf8")).trim());
-    } catch {
-      throw new Error(match[0]);
-    }
-  }
-  return result;
-};
-var readJson = async (file) => {
-  try {
-    return JSON.parse(stripJsonc(await readFile(file, "utf8")));
-  } catch {
-    return null;
-  }
-};
-var oauthToken = async (name) => {
-  const store = await readJson(path.join(os.homedir(), ".local", "share", "opencode", "mcp-auth.json"));
-  const tokens = store?.[name]?.tokens;
-  return typeof tokens?.accessToken === "string" ? tokens.accessToken : null;
-};
-var pickEntry = (mcp) => {
-  if (mcp[MCP_NAME])
-    return [MCP_NAME, mcp[MCP_NAME]];
-  const found = Object.entries(mcp).find(([, entry]) => {
-    try {
-      return /(^|\.)ploi\.io$/.test(new URL(entry.url ?? "").hostname);
-    } catch {
-      return false;
-    }
-  });
-  return found ?? null;
-};
-var mcpServers = (config) => {
-  const mcp = config?.mcp;
-  if (!mcp || typeof mcp !== "object")
-    return null;
-  const servers = mcp.servers;
-  if (servers && typeof servers === "object" && !("url" in servers) && !("type" in servers))
-    return servers;
-  return mcp;
-};
-var findPloiMcp = async (candidates = configCandidates()) => {
-  for (const configPath of candidates) {
-    const config = await readJson(configPath);
-    const mcp = mcpServers(config);
-    if (!mcp)
-      continue;
-    const picked = pickEntry(mcp);
-    if (!picked)
-      continue;
-    const [name, entry] = picked;
-    if (entry.enabled === false)
-      return { ok: false, reason: "disabled", detail: name };
-    if (entry.type !== "remote" || !entry.url)
-      return { ok: false, reason: "not-remote", detail: name };
-    const headers = {};
-    try {
-      for (const [key, value] of Object.entries(entry.headers ?? {})) {
-        if (typeof value === "string")
-          headers[key] = await resolvePlaceholders(value, path.dirname(configPath));
-      }
-    } catch (error) {
-      return { ok: false, reason: "unresolved", detail: error.message };
-    }
-    if (!Object.keys(headers).some((key) => key.toLowerCase() === "authorization")) {
-      const token = await oauthToken(name);
-      if (token)
-        headers.Authorization = `Bearer ${token}`;
-    }
-    return { ok: true, endpoint: { name, url: entry.url, headers } };
-  }
-  return { ok: false, reason: "not-configured" };
-};
-
 // src/insights.ts
 var ENTITIES = {
   amp: "&",
@@ -762,16 +643,16 @@ var explanationOf = (payload) => {
 };
 
 // src/preferences.ts
-import { mkdir, readFile as readFile2, rename, writeFile } from "node:fs/promises";
-import os2 from "node:os";
-import path2 from "node:path";
-var PREFERENCES_FILE = path2.join(os2.homedir(), ".config", "openchamber-ploi", "preferences.json");
-var LEGACY_FILE = path2.join(os2.homedir(), ".config", "openchamber-sites", "preferences.json");
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+var PREFERENCES_FILE = path.join(os.homedir(), ".config", "openchamber-ploi", "preferences.json");
+var LEGACY_FILE = path.join(os.homedir(), ".config", "openchamber-sites", "preferences.json");
 var normaliseHidden = (value) => Array.isArray(value) ? [...new Set(value.filter((id) => Number.isInteger(id) && id > 0))].sort((a, b) => a - b) : [];
 var readFrom = async (file) => {
   let text;
   try {
-    text = await readFile2(file, "utf8");
+    text = await readFile(file, "utf8");
   } catch {
     return null;
   }
@@ -783,7 +664,7 @@ var readFrom = async (file) => {
 };
 var readPreferences = async (file = PREFERENCES_FILE, legacy = LEGACY_FILE) => await readFrom(file) ?? await readFrom(legacy) ?? { hidden: [] };
 var writePreferences = async (preferences, file = PREFERENCES_FILE) => {
-  await mkdir(path2.dirname(file), { recursive: true });
+  await mkdir(path.dirname(file), { recursive: true });
   const temporary = `${file}.${process.pid}.tmp`;
   await writeFile(temporary, `${JSON.stringify({ hidden: normaliseHidden(preferences.hidden) }, null, 2)}
 `);
@@ -884,8 +765,8 @@ var healthOf = (check) => {
 
 // src/project.ts
 import { execFile } from "node:child_process";
-import { readFile as readFile3 } from "node:fs/promises";
-import path3 from "node:path";
+import { readFile as readFile2 } from "node:fs/promises";
+import path2 from "node:path";
 var PROVIDER_HOSTS = { github: "github.com", gitlab: "gitlab.com", bitbucket: "bitbucket.org" };
 var parseRemote = (url) => {
   const trimmed = url.trim();
@@ -927,7 +808,7 @@ var readIdentity = async (directory) => {
   const hosts = new Set;
   for (const file of [".env", ".env.production"]) {
     try {
-      const host = appUrlHost(await readFile3(path3.join(directory, file), "utf8"));
+      const host = appUrlHost(await readFile2(path2.join(directory, file), "utf8"));
       if (host && host !== "localhost" && !host.endsWith(".test") && !host.endsWith(".local"))
         hosts.add(host);
     } catch {}
@@ -1160,14 +1041,14 @@ var buildView = (input) => {
 };
 
 // src/service.ts
-var VERSION = "2.0.0";
+var VERSION = "3.0.0";
 var port = Number(process.env.OPENCHAMBER_SERVICE_PORT);
 var token = process.env.OPENCHAMBER_SERVICE_TOKEN ?? "";
 if (!port || !token) {
   console.error("OPENCHAMBER_SERVICE_PORT and OPENCHAMBER_SERVICE_TOKEN are required");
   process.exit(1);
 }
-var LOOKUP_TTL = 30000;
+var CREDENTIAL_TTL = 30000;
 var INVENTORY_TTL = 5 * 60000;
 var REPOSITORY_TTL = 30 * 60000;
 var CHECK_TTL = 60000;
@@ -1187,7 +1068,8 @@ var host = (() => {
 })();
 var state = {
   view: "overview",
-  lookup: null,
+  credential: null,
+  cardMessage: undefined,
   client: null,
   servers: null,
   sites: null,
@@ -1229,30 +1111,37 @@ var pool = async (items, size, work) => {
       await work(item);
   }));
 };
-var lookupProblem = (lookup) => {
-  if (lookup.reason === "disabled")
-    return { key: "mcp.disabled", params: { name: lookup.detail ?? "ploi" } };
-  if (lookup.reason === "not-remote")
-    return { key: "mcp.notRemote", params: { name: lookup.detail ?? "ploi" } };
-  if (lookup.reason === "unresolved")
-    return { key: "mcp.unresolved", params: { placeholder: lookup.detail ?? "" } };
-  return { key: "mcp.notConfigured" };
+var setCardMessage = (message) => {
+  if (!host || state.cardMessage === message)
+    return;
+  state.cardMessage = message;
+  host.needsConfiguration(message).catch(() => {
+    state.cardMessage = undefined;
+  });
 };
 var errorProblem = (error) => {
-  if (error instanceof McpError && error.kind === "auth")
-    return { key: "mcp.auth" };
+  if (error instanceof McpError && error.kind === "auth") {
+    setCardMessage(CARD_MESSAGES.refused);
+    return { key: "ploi.tokenRefused" };
+  }
   if (error instanceof McpError && error.kind === "network")
-    return { key: "mcp.network" };
-  return { key: "mcp.failed", params: { message: error.message.slice(0, 160) } };
+    return { key: "ploi.network" };
+  return { key: "ploi.failed", params: { message: error.message.slice(0, 160) } };
 };
 var currentClient = async () => {
-  if (!state.lookup || Date.now() - state.lookup.at > LOOKUP_TTL)
-    state.lookup = { value: await findPloiMcp(), at: Date.now() };
-  const lookup = state.lookup.value;
-  if (!lookup.ok)
-    return lookupProblem(lookup);
-  if (!state.client?.sameEndpoint(lookup.endpoint))
-    state.client = new McpClient(lookup.endpoint, VERSION);
+  if (!state.credential || Date.now() - state.credential.at > CREDENTIAL_TTL) {
+    state.credential = { value: await readCredential(() => host ? host.readSettings() : Promise.reject(new Error("no host"))), at: Date.now() };
+  }
+  const credential = state.credential.value;
+  if (!credential.ok) {
+    if (credential.reason === "host")
+      return { key: "ploi.hostUnavailable" };
+    setCardMessage(CARD_MESSAGES.missing);
+    return { key: "ploi.tokenMissing" };
+  }
+  const endpoint = { url: PLOI_MCP_URL, headers: { Authorization: `Bearer ${credential.token}` } };
+  if (!state.client?.sameEndpoint(endpoint))
+    state.client = new McpClient(endpoint, VERSION);
   return state.client;
 };
 var loadRepositories = async (client, sites, force) => {
@@ -1290,6 +1179,7 @@ var loadInventory = (force = false) => {
       state.sites = parsedSites;
       state.inventoryAt = Date.now();
       state.inventoryError = null;
+      setCardMessage(null);
       const known = new Set(parsedSites.map((site) => site.id));
       for (const id of [...state.checks.keys()])
         if (!known.has(id)) {
@@ -1375,8 +1265,7 @@ var instructionsFor = (matches) => {
     const branch = site.repository?.branch ? `, branch ${site.repository.branch}` : "";
     return `- ${site.domain}: site_id ${site.id} on server ${server?.name ?? "?"} (server_id ${site.serverId}${server?.ip ? `, ${server.ip}` : ""})${branch}`;
   });
-  const name = state.lookup?.value.ok ? state.lookup.value.endpoint.name : "ploi";
-  return [`This project is hosted on Ploi (MCP server "${name}"):`, ...lines].join(`
+  return ["This project is hosted on Ploi:", ...lines].join(`
 `);
 };
 var publishInstructions = (directory, matches) => {
@@ -1436,7 +1325,7 @@ var readSites = async (query) => {
   });
 };
 var refresh = async () => {
-  state.lookup = null;
+  state.credential = null;
   state.identities.clear();
   await within(loadInventory(true), 20000);
   if (!state.sites && state.inventoryError) {

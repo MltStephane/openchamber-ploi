@@ -5,7 +5,7 @@ import { describe, expect, test } from 'bun:test';
 
 import { DICTIONARIES, resolveLocale, translator } from '../src/i18n.ts';
 import { McpError, parseRpcBody, toolPayload } from '../src/mcp-client.ts';
-import { findPloiMcp, pickEntry, resolvePlaceholders, stripJsonc } from '../src/opencode-config.ts';
+import { readCredential, TOKEN_SETTING } from '../src/credentials.ts';
 import { parseRepository, parseServers, parseSites, siteUrl } from '../src/ploi.ts';
 import { classifyError, healthOf, probe } from '../src/probe.ts';
 import { appUrlHost, matchSites, parseRemote } from '../src/project.ts';
@@ -28,37 +28,20 @@ describe('i18n', () => {
   });
 });
 
-describe('opencode config', () => {
-  test('JSONC comments and trailing commas are removed, URLs kept', () => {
-    const text = '{\n // c\n "url": "https://ploi.io/api/mcp", /* x */ "a": [1,],\n}';
-    expect(JSON.parse(stripJsonc(text))).toEqual({ url: 'https://ploi.io/api/mcp', a: [1] });
+describe('credential', () => {
+  test('the token comes from the integration card, trimmed', async () => {
+    expect(await readCredential(async () => ({ [TOKEN_SETTING]: '  abc \n' }))).toEqual({ ok: true, token: 'abc' });
   });
-  test('the ploi entry wins, else a remote on ploi.io', () => {
-    expect(pickEntry({ ploi: { url: 'x' }, other: {} })?.[0]).toBe('ploi');
-    expect(pickEntry({ hosting: { type: 'remote', url: 'https://ploi.io/api/mcp' } })?.[0]).toBe('hosting');
-    expect(pickEntry({ nope: { url: 'https://example.com' } })).toBeNull();
+  test('an empty or absent field is missing', async () => {
+    expect(await readCredential(async () => ({ [TOKEN_SETTING]: '   ' }))).toEqual({ ok: false, reason: 'missing' });
+    expect(await readCredential(async () => ({}))).toEqual({ ok: false, reason: 'missing' });
   });
-  test('placeholders read env and files', async () => {
-    const dir = await mkdtemp(path.join(os.tmpdir(), 'sites-'));
-    await writeFile(path.join(dir, 'tok'), 'secret\n');
-    expect(await resolvePlaceholders('Bearer {file:tok}', dir)).toBe('Bearer secret');
-    expect(await resolvePlaceholders('{env:SITES_T}', dir, { SITES_T: 'v' })).toBe('v');
-    expect(resolvePlaceholders('{env:MISSING_X}', dir, {})).rejects.toThrow('{env:MISSING_X}');
+  test('the manifest declares that field as a secret', async () => {
+    const manifest = JSON.parse(await Bun.file(new URL('../package.json', import.meta.url)).text());
+    expect(manifest.openchamber.contributes.integration.settings).toContainEqual(expect.objectContaining({ id: TOKEN_SETTING, secret: true }));
   });
-  test('findPloiMcp reports each state', async () => {
-    const dir = await mkdtemp(path.join(os.tmpdir(), 'sites-'));
-    const file = path.join(dir, 'opencode.json');
-    await writeFile(file, JSON.stringify({ mcp: {} }));
-    expect(await findPloiMcp([file])).toEqual({ ok: false, reason: 'not-configured' });
-    await writeFile(file, JSON.stringify({ mcp: { ploi: { type: 'remote', url: 'https://ploi.io/api/mcp', enabled: false } } }));
-    expect(await findPloiMcp([file])).toMatchObject({ ok: false, reason: 'disabled' });
-    await writeFile(file, JSON.stringify({ mcp: { ploi: { type: 'local', command: ['x'] } } }));
-    expect(await findPloiMcp([file])).toMatchObject({ ok: false, reason: 'not-remote' });
-    await writeFile(path.join(dir, 'tok'), 'abc');
-    await writeFile(file, JSON.stringify({ mcp: { ploi: { type: 'remote', url: 'https://ploi.io/api/mcp', headers: { Authorization: 'Bearer {file:tok}' } } } }));
-    expect(await findPloiMcp([file])).toMatchObject({ ok: true, endpoint: { name: 'ploi', headers: { Authorization: 'Bearer abc' } } });
-    await writeFile(file, JSON.stringify({ mcp: { servers: { ploi: { type: 'remote', url: 'https://ploi.io/api/mcp' } } } }));
-    expect(await findPloiMcp([file])).toMatchObject({ ok: true, endpoint: { name: 'ploi', url: 'https://ploi.io/api/mcp' } });
+  test('OpenChamber not answering is not a missing token', async () => {
+    expect(await readCredential(() => Promise.reject(new Error('down')))).toEqual({ ok: false, reason: 'host' });
   });
 });
 

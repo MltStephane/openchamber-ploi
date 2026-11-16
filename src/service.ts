@@ -1,13 +1,13 @@
 // Local service started by OpenChamber (see GUEST_SERVICES.md in @openchamber/sdk).
-// Reads the Ploi inventory through the Ploi MCP server configured in OpenCode, checks every site over
+// Reads the Ploi inventory through Ploi's MCP server with the token from the integration card, checks every site over
 // HTTP, and answers the Work Status section. Read-only: it never deploys, restarts or changes anything.
 import http from 'node:http';
 
 import { createServiceHost } from '@openchamber/sdk';
 
 import { resolveLocale, translator } from './i18n.ts';
+import { CARD_MESSAGES, PLOI_MCP_URL, readCredential, type Credential } from './credentials.ts';
 import { McpClient, McpError } from './mcp-client.ts';
-import { findPloiMcp, type McpLookup } from './opencode-config.ts';
 import { explanationOf, parseInsightList, parseInsightSites, type Insight } from './insights.ts';
 import { normaliseHidden, readPreferences, writePreferences } from './preferences.ts';
 import { parseRepository, parseServers, parseSites, siteUrl, type Repository, type Server, type Site } from './ploi.ts';
@@ -16,7 +16,7 @@ import { matchSites, projectsBySite, readIdentity, type ProjectIdentity, type Pr
 import { buildSitesPayload } from './sites-payload.ts';
 import { buildView, VIEWS, type Problem, type View } from './status-view.ts';
 
-const VERSION = '2.0.0';
+const VERSION = '3.0.0';
 const port = Number(process.env.OPENCHAMBER_SERVICE_PORT);
 const token = process.env.OPENCHAMBER_SERVICE_TOKEN ?? '';
 if (!port || !token) {
@@ -24,7 +24,8 @@ if (!port || !token) {
   process.exit(1);
 }
 
-const LOOKUP_TTL = 30_000;
+/** The token is read again this often, so a new one on the card is used without a restart. */
+const CREDENTIAL_TTL = 30_000;
 const INVENTORY_TTL = 5 * 60_000;
 const REPOSITORY_TTL = 30 * 60_000;
 const CHECK_TTL = 60_000;
@@ -42,7 +43,9 @@ const host = (() => {
 
 const state = {
   view: 'overview' as View,
-  lookup: null as { value: McpLookup; at: number } | null,
+  credential: null as { value: Credential; at: number } | null,
+  /** What the integration card says now, so it is set only when it changes. */
+  cardMessage: undefined as string | null | undefined,
   client: null as McpClient | null,
   servers: null as Server[] | null,
   sites: null as Site[] | null,
@@ -85,25 +88,35 @@ const pool = async <T>(items: T[], size: number, work: (item: T) => Promise<void
   }));
 };
 
-const lookupProblem = (lookup: Exclude<McpLookup, { ok: true }>): Problem => {
-  if (lookup.reason === 'disabled') return { key: 'mcp.disabled', params: { name: lookup.detail ?? 'ploi' } };
-  if (lookup.reason === 'not-remote') return { key: 'mcp.notRemote', params: { name: lookup.detail ?? 'ploi' } };
-  if (lookup.reason === 'unresolved') return { key: 'mcp.unresolved', params: { placeholder: lookup.detail ?? '' } };
-  return { key: 'mcp.notConfigured' };
+/** Shows `message` on the integration card, or clears it with `null`; only when it changes. */
+const setCardMessage = (message: string | null): void => {
+  if (!host || state.cardMessage === message) return;
+  state.cardMessage = message;
+  host.needsConfiguration(message).catch(() => { state.cardMessage = undefined; });
 };
 
 const errorProblem = (error: unknown): Problem => {
-  if (error instanceof McpError && error.kind === 'auth') return { key: 'mcp.auth' };
-  if (error instanceof McpError && error.kind === 'network') return { key: 'mcp.network' };
-  return { key: 'mcp.failed', params: { message: (error as Error).message.slice(0, 160) } };
+  if (error instanceof McpError && error.kind === 'auth') {
+    setCardMessage(CARD_MESSAGES.refused);
+    return { key: 'ploi.tokenRefused' };
+  }
+  if (error instanceof McpError && error.kind === 'network') return { key: 'ploi.network' };
+  return { key: 'ploi.failed', params: { message: (error as Error).message.slice(0, 160) } };
 };
 
-/** The MCP client for the server OpenCode has now; a changed URL or token gets a new client. */
+/** The MCP client for the token on the integration card now; a changed token gets a new client. */
 const currentClient = async (): Promise<McpClient | Problem> => {
-  if (!state.lookup || Date.now() - state.lookup.at > LOOKUP_TTL) state.lookup = { value: await findPloiMcp(), at: Date.now() };
-  const lookup = state.lookup.value;
-  if (!lookup.ok) return lookupProblem(lookup);
-  if (!state.client?.sameEndpoint(lookup.endpoint)) state.client = new McpClient(lookup.endpoint, VERSION);
+  if (!state.credential || Date.now() - state.credential.at > CREDENTIAL_TTL) {
+    state.credential = { value: await readCredential(() => (host ? host.readSettings() : Promise.reject(new Error('no host')))), at: Date.now() };
+  }
+  const credential = state.credential.value;
+  if (!credential.ok) {
+    if (credential.reason === 'host') return { key: 'ploi.hostUnavailable' };
+    setCardMessage(CARD_MESSAGES.missing);
+    return { key: 'ploi.tokenMissing' };
+  }
+  const endpoint = { url: PLOI_MCP_URL, headers: { Authorization: `Bearer ${credential.token}` } };
+  if (!state.client?.sameEndpoint(endpoint)) state.client = new McpClient(endpoint, VERSION);
   return state.client;
 };
 
@@ -135,6 +148,7 @@ const loadInventory = (force = false): Promise<void> => {
       state.sites = parsedSites;
       state.inventoryAt = Date.now();
       state.inventoryError = null;
+      setCardMessage(null);
       const known = new Set(parsedSites.map((site) => site.id));
       for (const id of [...state.checks.keys()]) if (!known.has(id)) { state.checks.delete(id); state.history.delete(id); }
     } catch (error) {
@@ -202,8 +216,7 @@ const instructionsFor = (matches: SiteMatch[]): string => {
     const branch = site.repository?.branch ? `, branch ${site.repository.branch}` : '';
     return `- ${site.domain}: site_id ${site.id} on server ${server?.name ?? '?'} (server_id ${site.serverId}${server?.ip ? `, ${server.ip}` : ''})${branch}`;
   });
-  const name = state.lookup?.value.ok ? state.lookup.value.endpoint.name : 'ploi';
-  return [`This project is hosted on Ploi (MCP server "${name}"):`, ...lines].join('\n');
+  return ['This project is hosted on Ploi:', ...lines].join('\n');
 };
 
 const publishInstructions = (directory: string, matches: SiteMatch[]): void => {
@@ -263,7 +276,7 @@ const readSites = async (query: URLSearchParams) => {
 
 /** Re-reads Ploi and re-checks every site. A failure with nothing to show is the only error. */
 const refresh = async (): Promise<{ status: number; body: object }> => {
-  state.lookup = null;
+  state.credential = null;
   state.identities.clear();
   await within(loadInventory(true), 20_000);
   if (!state.sites && state.inventoryError) {

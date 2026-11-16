@@ -30,7 +30,7 @@ const valid = (view: ReturnType<typeof buildView>) => {
 
 describe('buildView', () => {
   test('a missing MCP server is the only row', () => {
-    const view = valid(buildView(input({ servers: null, sites: null, problem: { key: 'mcp.notConfigured' } })));
+    const view = valid(buildView(input({ servers: null, sites: null, problem: { key: 'ploi.tokenMissing' } })));
     expect(view.rows).toHaveLength(1);
     expect(view.rows[0]).toMatchObject({ kind: 'note', tone: 'error' });
   });
@@ -102,7 +102,7 @@ describe('buildView', () => {
   });
 
   test('a refresh error stays visible above the data', () => {
-    const view = valid(buildView(input({ problem: { key: 'mcp.auth' } })));
+    const view = valid(buildView(input({ problem: { key: 'ploi.tokenRefused' } })));
     expect(view.rows[0]).toMatchObject({ id: 'problem', tone: 'error' });
   });
 });

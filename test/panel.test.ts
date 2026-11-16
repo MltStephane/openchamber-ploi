@@ -37,8 +37,8 @@ describe('sites payload', () => {
     expect(body.project).toEqual({ repository: 'me/app', matches: [{ siteId: 1, by: 'repository' }] });
   });
   test('before the first read nothing is loaded', () => {
-    const body = buildSitesPayload({ hidden: [], insights: null, problem: { key: 'mcp.notConfigured' }, servers: null, sites: null, checks: new Map(), history: new Map(), project: null });
-    expect(body).toMatchObject({ loaded: false, sites: [], problem: { key: 'mcp.notConfigured' } });
+    const body = buildSitesPayload({ hidden: [], insights: null, problem: { key: 'ploi.tokenMissing' }, servers: null, sites: null, checks: new Map(), history: new Map(), project: null });
+    expect(body).toMatchObject({ loaded: false, sites: [], problem: { key: 'ploi.tokenMissing' } });
   });
 });
 

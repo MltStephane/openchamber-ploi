@@ -1,6 +1,6 @@
 // A minimal MCP client over Streamable HTTP: initialize once, then tools/call.
 // Only what the extension needs: JSON or SSE answers, a session id, one retry on an expired session.
-import type { McpEndpoint } from './opencode-config.ts';
+export type McpEndpoint = { url: string; headers: Record<string, string> };
 
 const PROTOCOL_VERSION = '2025-06-18';
 const TIMEOUT_MS = 20_000;

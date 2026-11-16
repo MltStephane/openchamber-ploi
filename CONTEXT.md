@@ -5,7 +5,7 @@
 An **OpenChamber** extension (id `ploi`, formerly `sites`) that monitors the user's Ploi servers and sites from a side panel and the Work Status panel, lists Ploi insights per site, and shows which site the open project is deployed to.
 
 - Surfaces: a rail side panel with every server and site, a Work Status section drawn by the app, and per-project agent instructions.
-- Data: the Ploi MCP server already configured in OpenCode. The extension needs it and says so when it is missing.
+- Data: Ploi's MCP server (`https://ploi.io/api/mcp`), with an API token the user pastes in Settings → Integrations → Ploi. Until 3.0.0 the token was taken from the OpenCode config; that was dropped because a service must not read another app's secrets (SDK: secrets come from `readSettings()`).
 - Public repository: `git@github.com:MltStephane/openchamber-ploi.git`, branch `main`. Installs from its URL or a local path. CI (`.github/workflows/check.yml`) runs the tests, the typecheck, a built-files check and `openchamber-guest-check`.
 - Nothing private goes in the repository: test fixtures and README screenshots use fictional domains, ids and IPs.
 

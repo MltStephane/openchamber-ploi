@@ -54,21 +54,17 @@ Your sites run on servers you rarely open. A deploy breaks a page, a certificate
 ## Quick start
 
 > [!NOTE]
-> Requires OpenChamber **2.7.2** or later, and the **Ploi MCP server configured in OpenCode** (Ploi Pro plan or higher).
+> Requires OpenChamber **2.7.2** or later and a Ploi **API token**. The extension reads Ploi through its MCP server, which needs the Ploi Pro plan or higher.
 
-1. Add the Ploi MCP server to `~/.config/opencode/opencode.json`, as a remote server named `ploi` (any remote server on `ploi.io` works too):
-   ```json
-   { "mcp": { "servers": { "ploi": { "type": "remote", "url": "https://ploi.io/api/mcp",
-     "headers": { "Authorization": "Bearer {file:~/.config/opencode/secrets/ploi-mcp}" } } } } }
-   ```
-   `mcp.<name>` (OpenCode 1) and `mcp.servers.<name>` (OpenCode 2) both work, as do `{env:…}` / `{file:…}` placeholders and an OAuth token stored by OpenCode. The extension reuses that credential: there is nothing to configure in OpenChamber.
+1. In your Ploi profile, create an API token. Read access to servers and sites is enough: the extension never writes.
 2. Install the extension: [open in OpenChamber](openchamber://extensions/install?url=https%3A%2F%2Fgithub.com%2FMltStephane%2Fopenchamber-ploi), or paste `https://github.com/MltStephane/openchamber-ploi` in **Settings → Extensions**. From a local clone, paste the folder's absolute path instead:
    ```sh
    git clone https://github.com/MltStephane/openchamber-ploi.git
    ```
 3. Update it later by raising `version`: OpenChamber offers the update in **Settings → Extensions**.
-4. **Approve** what the extension asks for: the local service (it runs `git` to read your projects' remotes), and *sessions* + *prompt* for *Fix the findings*.
-5. Click the <kbd>Ploi</kbd> icon on the rail for the **panel**; the **Ploi** section appears in Work Status.
+4. **Approve** what the extension asks for: the local service (it runs `git` to read your projects' remotes), the Ploi integration, and *sessions* + *prompt* for *Fix the findings*.
+5. Paste the token in **Settings → Integrations → Ploi**. Until then, the card and the section say it is missing.
+6. Click the <kbd>Ploi</kbd> icon on the rail for the **panel**; the **Ploi** section appears in Work Status.
 
 > [!TIP]
 > The built files (`panel/main.js`, `service/main.js`) are committed: OpenChamber compiles nothing. After changing the sources, run `npm run build`, then reload the extension.
@@ -101,7 +97,9 @@ flowchart LR
   S --> G
 ```
 
-The panel runs in a sandboxed iframe with no network; the Work Status section is drawn by the app from the service's answer. Both go through a local Node service that OpenChamber starts (`contributes.service`). The service listens on `127.0.0.1`, requires the `OPENCHAMBER_SERVICE_TOKEN` token, finds the Ploi MCP server in the OpenCode config, and talks to it over MCP Streamable HTTP.
+The panel runs in a sandboxed iframe with no network; the Work Status section is drawn by the app from the service's answer. Both go through a local Node service that OpenChamber starts (`contributes.service`). The service listens on `127.0.0.1`, requires the `OPENCHAMBER_SERVICE_TOKEN` token, reads the API token from the integration card with `readSettings()`, and talks to `https://ploi.io/api/mcp` over MCP Streamable HTTP with it.
+
+- **Token**: kept by OpenChamber in a `secret` field of the integration card. It never reaches a page, is never logged, and is sent only to `ploi.io`. It is read again every 30 s, so a new token is used without restarting anything. A missing or refused token shows on the card (`needsConfiguration`) and in the section.
 
 - **Ploi**: `list-servers` and `list-sites` every 5 minutes, `get-site-repository` per site every 30 minutes, `list-server-insights` and `get-server-insight` every 15 minutes, all on *Refresh* too.
 - **Insights per site**: Ploi files insights per server; each explanation links the sites it concerns, and `src/insights.ts` splits it from those links (tested against real answers in `test/fixtures/`).
@@ -121,7 +119,7 @@ The panel runs in a sandboxed iframe with no network; the Work Status section is
 | `POST /hidden` | `{ hidden: number[] }` | `{ ok: true, hidden }` |
 | `POST /projects` | `{ projects: { id, directory }[] }` | `{ ready, matches: { [siteId]: { projectId, by } } }` |
 
-Failures never come back as a 500 to the section: a missing MCP server, a refused token or an unreachable Ploi is a note saying what to do, an unreachable site is a red dot.
+Failures never come back as a 500 to the section: a missing or refused token or an unreachable Ploi is a note saying what to do, an unreachable site is a red dot.
 
 ## Limits
 
@@ -139,12 +137,13 @@ npm run typecheck  # tsc --noEmit
 bunx openchamber-guest-check
 ```
 
-The tests cover the OpenCode config lookup, the MCP client, Ploi parsing, project matching, HTTP checks, the insight parser on real Ploi answers, the Work Status rows (validated against the SDK schema), the panel and insights models, the fix prompt, preferences and i18n.
+The tests cover the token lookup, the MCP client, Ploi parsing, project matching, HTTP checks, the insight parser on real Ploi answers, the Work Status rows (validated against the SDK schema), the panel and insights models, the fix prompt, preferences and i18n.
 
-Test the service by hand (it reads the real Ploi account through the MCP configured in OpenCode):
+Test the service by hand against your Ploi account. `scripts/dev-host.mjs` stands in for OpenChamber and hands the service the token:
 
 ```sh
-OPENCHAMBER_SERVICE_PORT=4599 OPENCHAMBER_SERVICE_TOKEN=t node service/main.js &
+PLOI_API_TOKEN=your-token node scripts/dev-host.mjs 4597 &
+OPENCHAMBER_HOST_CALLBACK_URL=http://127.0.0.1:4597 OPENCHAMBER_SERVICE_PORT=4599 OPENCHAMBER_SERVICE_TOKEN=t node service/main.js &
 curl -H 'Authorization: Bearer t' 'http://127.0.0.1:4599/sites?directory=/path/to/project'
 ```
 
@@ -152,13 +151,13 @@ curl -H 'Authorization: Bearer t' 'http://127.0.0.1:4599/sites?directory=/path/t
 <summary><strong>Project layout</strong></summary>
 
 ```
-package.json                  manifest (openchamber.contributes: panel, service, statusSection, instructions, capabilities)
+package.json                  manifest (openchamber.contributes: panel, service, statusSection, instructions, capabilities, integration)
 icon.svg                      rail icon
 panel/index.html              page loaded in the iframe
 panel/main.js                 IIFE bundle (built)
 service/main.js               local service (built)
 src/service.ts                local HTTP service: routes, caches, checks, agent instructions
-src/opencode-config.ts        finds the Ploi MCP server and its credential in the OpenCode config
+src/credentials.ts            the API token from the integration card, and what the card says
 src/mcp-client.ts             minimal MCP Streamable HTTP client
 src/ploi.ts                   servers, sites, repositories, Ploi dashboard URLs
 src/insights.ts               insight list and explanation parser
@@ -178,7 +177,8 @@ src/panel/model.ts            site list model (pure)
 src/panel/insights-model.ts   insights per site model (pure)
 src/panel/view.ts             styles and DOM helpers
 docs/                         icon and README screenshots
-test/                         bun tests and real Ploi fixtures
+scripts/dev-host.mjs          stand-in for OpenChamber when running the service by hand
+test/                         bun tests and anonymised Ploi fixtures
 ```
 
 </details>
