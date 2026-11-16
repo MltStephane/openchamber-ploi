@@ -21,4 +21,6 @@ export const readCredential = async (readSettings: () => Promise<Record<string, 
 export const CARD_MESSAGES = {
   missing: 'Add your Ploi API token in Settings → Integrations → Ploi, field “Ploi API token” (read access is enough).',
   refused: 'Ploi refused the API token. Create a new one in Ploi (read access), then paste it in Settings → Integrations → Ploi, field “Ploi API token”.',
+  /** Ploi's reason, such as an IP allowlist on the token. */
+  forbidden: (reason: string) => `Ploi refused access: ${reason}`.slice(0, 300),
 } as const;

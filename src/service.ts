@@ -16,7 +16,7 @@ import { matchSites, projectsBySite, readIdentity, type ProjectIdentity, type Pr
 import { buildSitesPayload } from './sites-payload.ts';
 import { buildView, VIEWS, type Problem, type View } from './status-view.ts';
 
-const VERSION = '3.0.3';
+const VERSION = '3.0.4';
 const port = Number(process.env.OPENCHAMBER_SERVICE_PORT);
 const token = process.env.OPENCHAMBER_SERVICE_TOKEN ?? '';
 if (!port || !token) {
@@ -99,6 +99,10 @@ const errorProblem = (error: unknown): Problem => {
   if (error instanceof McpError && error.kind === 'auth') {
     setCardMessage(CARD_MESSAGES.refused);
     return { key: 'ploi.tokenRefused' };
+  }
+  if (error instanceof McpError && error.kind === 'forbidden') {
+    setCardMessage(CARD_MESSAGES.forbidden(error.message));
+    return { key: 'ploi.forbidden', params: { reason: error.message } };
   }
   if (error instanceof McpError && error.kind === 'network') return { key: 'ploi.network' };
   return { key: 'ploi.failed', params: { message: (error as Error).message.slice(0, 160) } };

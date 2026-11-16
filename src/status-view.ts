@@ -10,7 +10,7 @@ import type { ProjectIdentity, SiteMatch } from './project.ts';
 export type View = 'overview' | 'sites';
 export const VIEWS: View[] = ['overview', 'sites'];
 
-export type Problem = { key: 'ploi.tokenMissing' | 'ploi.tokenRefused' | 'ploi.hostUnavailable' | 'ploi.network' | 'ploi.failed'; params?: Record<string, string> };
+export type Problem = { key: 'ploi.tokenMissing' | 'ploi.tokenRefused' | 'ploi.forbidden' | 'ploi.hostUnavailable' | 'ploi.network' | 'ploi.failed'; params?: Record<string, string> };
 
 export type ViewInput = {
   t: Translate;

@@ -4,7 +4,7 @@ import path from 'node:path';
 import { describe, expect, test } from 'bun:test';
 
 import { DICTIONARIES, resolveLocale, translator } from '../src/i18n.ts';
-import { McpError, parseRpcBody, toolPayload } from '../src/mcp-client.ts';
+import { McpError, parseRpcBody, ploiMessage, toolPayload } from '../src/mcp-client.ts';
 import { readCredential, TOKEN_SETTING } from '../src/credentials.ts';
 import { parseRepository, parseServers, parseSites, siteUrl } from '../src/ploi.ts';
 import { classifyError, healthOf, probe } from '../src/probe.ts';
@@ -50,6 +50,10 @@ describe('mcp client', () => {
     expect(parseRpcBody('application/json', '{"id":3,"result":1}', 3).result).toBe(1);
     const sse = 'event: message\ndata: {"id":1,"result":"a"}\n\nevent: message\ndata: {"id":4,"result":"b"}\n\n';
     expect(parseRpcBody('text/event-stream', sse, 4).result).toBe('b');
+  });
+  test('Ploi error messages', () => {
+    expect(ploiMessage('{"message":"This IP address is not allowed to interact with the API."}')).toBe('This IP address is not allowed to interact with the API.');
+    expect(ploiMessage('<html>')).toBe('');
   });
   test('tool payloads', () => {
     expect(toolPayload({ content: [{ type: 'text', text: '{"data":[1]}' }] })).toEqual({ data: [1] });

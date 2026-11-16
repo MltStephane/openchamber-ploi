@@ -6,7 +6,8 @@ const PROTOCOL_VERSION = '2025-06-18';
 const TIMEOUT_MS = 20_000;
 
 export class McpError extends Error {
-  constructor(readonly kind: 'auth' | 'http' | 'protocol' | 'tool' | 'network', message: string) {
+  /** `auth`: the token is refused (401). `forbidden`: Ploi refuses the request for another reason (403), such as an IP allowlist; the message is Ploi's. */
+  constructor(readonly kind: 'auth' | 'forbidden' | 'http' | 'protocol' | 'tool' | 'network', message: string) {
     super(message);
   }
 }
@@ -24,6 +25,16 @@ export const parseRpcBody = (contentType: string, text: string, id: number): Jso
     if (message.id === id) return message;
   }
   throw new McpError('protocol', 'No answer in the event stream.');
+};
+
+/** Ploi's own `{ message }` from an error body, cut short; empty when there is none. */
+export const ploiMessage = (text: string): string => {
+  try {
+    const message = (JSON.parse(text) as { message?: unknown }).message;
+    return typeof message === 'string' ? message.trim().slice(0, 200) : '';
+  } catch {
+    return '';
+  }
 };
 
 /** Tool results are text content holding JSON; `structuredContent` wins when present. */
@@ -63,7 +74,8 @@ export class McpClient {
     const session = response.headers.get('mcp-session-id');
     if (session) this.sessionId = session;
     const text = await response.text();
-    if (response.status === 401 || response.status === 403) throw new McpError('auth', `HTTP ${response.status}`);
+    if (response.status === 401) throw new McpError('auth', 'HTTP 401');
+    if (response.status === 403) throw new McpError('forbidden', ploiMessage(text) || 'HTTP 403');
     if (response.status === 404 && this.sessionId) { this.sessionId = null; throw new McpError('protocol', 'session-expired'); }
     if (!response.ok) throw new McpError('http', `HTTP ${response.status}`);
     if (!expectAnswer) return null;

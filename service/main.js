@@ -218,6 +218,7 @@ var en = {
   "control.refresh": "Refresh",
   "ploi.tokenMissing": "Add a Ploi API token in Settings → Integrations → Ploi, field “Ploi API token”, to see your servers and sites.",
   "ploi.tokenRefused": "Ploi refused the API token. Create a new one in Ploi (read access), then paste it in Settings → Integrations → Ploi, field “Ploi API token”.",
+  "ploi.forbidden": "Ploi refused access: {reason} Check the token’s restrictions (allowed IPs) in Ploi.",
   "ploi.hostUnavailable": "Cannot read the Ploi token from OpenChamber. Reload the extension in Settings → Extensions.",
   "ploi.network": "Cannot reach Ploi. Check your connection, then Refresh.",
   "ploi.failed": "Ploi failed: {message}",
@@ -315,6 +316,7 @@ var fr = {
   "control.refresh": "Actualiser",
   "ploi.tokenMissing": "Ajoutez un jeton d’API Ploi dans Réglages → Intégrations → Ploi, champ « Ploi API token », pour voir vos serveurs et sites.",
   "ploi.tokenRefused": "Ploi refuse le jeton d’API. Créez-en un nouveau dans Ploi (lecture seule), puis collez-le dans Réglages → Intégrations → Ploi, champ « Ploi API token ».",
+  "ploi.forbidden": "Ploi refuse l’accès : {reason} Vérifiez les restrictions du jeton (IP autorisées) dans Ploi.",
   "ploi.hostUnavailable": "Impossible de lire le jeton Ploi depuis OpenChamber. Rechargez l’extension dans Réglages → Extensions.",
   "ploi.network": "Ploi est injoignable. Vérifiez la connexion, puis Actualiser.",
   "ploi.failed": "Ploi a échoué : {message}",
@@ -432,7 +434,8 @@ var readCredential = async (readSettings) => {
 };
 var CARD_MESSAGES = {
   missing: "Add your Ploi API token in Settings → Integrations → Ploi, field “Ploi API token” (read access is enough).",
-  refused: "Ploi refused the API token. Create a new one in Ploi (read access), then paste it in Settings → Integrations → Ploi, field “Ploi API token”."
+  refused: "Ploi refused the API token. Create a new one in Ploi (read access), then paste it in Settings → Integrations → Ploi, field “Ploi API token”.",
+  forbidden: (reason) => `Ploi refused access: ${reason}`.slice(0, 300)
 };
 
 // src/mcp-client.ts
@@ -457,6 +460,14 @@ var parseRpcBody = (contentType, text, id) => {
       return message;
   }
   throw new McpError("protocol", "No answer in the event stream.");
+};
+var ploiMessage = (text) => {
+  try {
+    const message = JSON.parse(text).message;
+    return typeof message === "string" ? message.trim().slice(0, 200) : "";
+  } catch {
+    return "";
+  }
 };
 var toolPayload = (result) => {
   const value = result;
@@ -504,8 +515,10 @@ class McpClient {
     if (session)
       this.sessionId = session;
     const text = await response.text();
-    if (response.status === 401 || response.status === 403)
-      throw new McpError("auth", `HTTP ${response.status}`);
+    if (response.status === 401)
+      throw new McpError("auth", "HTTP 401");
+    if (response.status === 403)
+      throw new McpError("forbidden", ploiMessage(text) || "HTTP 403");
     if (response.status === 404 && this.sessionId) {
       this.sessionId = null;
       throw new McpError("protocol", "session-expired");
@@ -1041,7 +1054,7 @@ var buildView = (input) => {
 };
 
 // src/service.ts
-var VERSION = "3.0.3";
+var VERSION = "3.0.4";
 var port = Number(process.env.OPENCHAMBER_SERVICE_PORT);
 var token = process.env.OPENCHAMBER_SERVICE_TOKEN ?? "";
 if (!port || !token) {
@@ -1123,6 +1136,10 @@ var errorProblem = (error) => {
   if (error instanceof McpError && error.kind === "auth") {
     setCardMessage(CARD_MESSAGES.refused);
     return { key: "ploi.tokenRefused" };
+  }
+  if (error instanceof McpError && error.kind === "forbidden") {
+    setCardMessage(CARD_MESSAGES.forbidden(error.message));
+    return { key: "ploi.forbidden", params: { reason: error.message } };
   }
   if (error instanceof McpError && error.kind === "network")
     return { key: "ploi.network" };
