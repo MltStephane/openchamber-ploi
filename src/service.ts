@@ -16,7 +16,7 @@ import { matchSites, projectsBySite, readIdentity, type ProjectIdentity, type Pr
 import { buildSitesPayload } from './sites-payload.ts';
 import { buildView, VIEWS, type Problem, type View } from './status-view.ts';
 
-const VERSION = '3.0.1';
+const VERSION = '3.0.2';
 const port = Number(process.env.OPENCHAMBER_SERVICE_PORT);
 const token = process.env.OPENCHAMBER_SERVICE_TOKEN ?? '';
 if (!port || !token) {

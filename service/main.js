@@ -431,8 +431,8 @@ var readCredential = async (readSettings) => {
   return token ? { ok: true, token } : { ok: false, reason: "missing" };
 };
 var CARD_MESSAGES = {
-  missing: "Paste a Ploi API token (read access is enough) in “Ploi API token” to see your servers and sites.",
-  refused: "Ploi refused the token in “Ploi API token”. Create a new one in Ploi (read access) and paste it there."
+  missing: "Add your Ploi API token in Settings → Integrations → Ploi, field “Ploi API token” (read access is enough).",
+  refused: "Ploi refused the API token. Create a new one in Ploi (read access), then paste it in Settings → Integrations → Ploi, field “Ploi API token”."
 };
 
 // src/mcp-client.ts
@@ -1041,7 +1041,7 @@ var buildView = (input) => {
 };
 
 // src/service.ts
-var VERSION = "3.0.1";
+var VERSION = "3.0.2";
 var port = Number(process.env.OPENCHAMBER_SERVICE_PORT);
 var token = process.env.OPENCHAMBER_SERVICE_TOKEN ?? "";
 if (!port || !token) {

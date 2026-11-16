@@ -1,6 +1,6 @@
 {
   "name": "openchamber-ploi",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "private": true,
   "description": "OpenChamber extension: your Ploi servers and sites in a side panel and in Work Status, with live HTTP checks, insights and fix sessions.",
   "type": "module",
